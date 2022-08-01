@@ -25,5 +25,5 @@ const LoginUsuarioModel = conexao.define('logins',{
 LoginUsuarioModel.belongsTo(UsuarioModel); //um login tem um usuário
 UsuarioModel.hasOne(LoginUsuarioModel); //um usuario tem um login
 
-LoginUsuarioModel.sync({force:true});
+LoginUsuarioModel.sync({force:false});
 module.exports = LoginUsuarioModel;

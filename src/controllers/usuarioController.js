@@ -1,4 +1,4 @@
-const Usuario = require("../models/UsuarioModel");
+const UsuarioModel = require("../models/UsuarioModel");
 const LoginUsuarioModel = require("../models/LoginUsuarioModel");
 const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWTSECRET;
@@ -30,13 +30,13 @@ module.exports = {
 
             if(loginUsuario != undefined){
 
-                let loginCorreto = bcrypt.compareSync(senha,loginUsuario.senhaLogin);
+                let senhaCorreta = bcrypt.compareSync(senha,loginUsuario.senhaLogin);
 
-                if(loginCorreto){
+                if(senhaCorreta){
 
-                    Usuario.findOne({
+                    UsuarioModel.findOne({
                         where:{
-                            idUsuario: loginCorreto.usuario_id_usuario
+                            idUsuario: loginUsuario.usuario_id_usuario
                         }
                     }).then(infoUsuario =>{
 
@@ -45,11 +45,24 @@ module.exports = {
                             nome: infoUsuario.nomeUsuario,
                             sobrenome: infoUsuario.sobrenomeUsuario,
                             email: loginUsuario.emailLogin
+                        }, jwtSecret,{expiresIn:'168h'}, (err,token) =>{
+                            if(err){
+                                res.status(400);
+                                res.json({err: "Erro na geração do token!"});
+                            }else{
+                                res.status(200);
+                                localStorage.setItem("token", token);
+                                res.json({token: token});
+                            }
+                        }).catch((err) =>{
+                            res.status(400);
+                            res.json({err: "Erro na busca pelas informações do usuário!"});
                         })
-                        res.status(200);
                     })
 
-
+                }else{
+                    res.status(401);
+                    res.json({err: "A senha não está correta!"});
                 }
 
             }else{
@@ -57,6 +70,9 @@ module.exports = {
                 res.json({err: "O e-mail não está cadastrado!"});
             }
 
+        }).catch((err) =>{
+            res.status(401);
+            res.json({err: "erro na busca pelo e-mail do usuário!"});
         })
 
     },
@@ -66,6 +82,41 @@ module.exports = {
     },
 
     async criar(req,res){
+
+        var {nome, sobrenome, email, senha, confSenha} = req.body;
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(senha,salt);
+
+        if(nome.trim() == "" || nome == undefined){
+            res.status(400);
+            res.json({err: "O nome deve ser preenchido!"});
+        } else if (sobrenome.trim() == "" || sobrenome != undefined){
+            res.status(400);
+            res.json({err: "O sobrenome deve ser preenchido!"});
+        } else if(email.trim() == "" || email != undefined){
+            res.status(400);
+            res.json({err: "O e-mail deve ser preenchido!"});
+        } else if (senha.trim() == "" || senha == undefined || confSenha.trim() == "" || confSenha == undefined){
+            res.status(400);
+            res.json({err: "As senham devem ser preenchidas!"});
+        } else if (senha != confSenha){
+            res.status(400);
+            res.json({err: "As senham devem ser iguais!"});
+        }else{
+            UsuarioModel.create({
+                nomeUsuario: nome,
+                sobreNomeUsuario: sobrenome
+            }).then(() =>{
+                LoginUsuarioModel.create({
+                    emailLogin: email.trim(),
+                    senhaLogin: hash
+
+                })
+            })
+        }
+
+
+        await Usuario.create()
 
     },
 
