@@ -1,7 +1,7 @@
 const Sequelize = require ("sequelize");
-const connection = require("../database/database");
+const conexao = require("../../database/database");
 
-const UsuarioModel = connection.define('usuarios',{
+const UsuarioModel = conexao.define('usuarios',{
     idUsuario:{
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -14,16 +14,6 @@ const UsuarioModel = connection.define('usuarios',{
     },
 
     sobreNomeUsuario:{
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-
-    emailUsuario:{
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-
-    senhaUsuario:{
         type: Sequelize.STRING,
         allowNull: false
     }
