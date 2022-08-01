@@ -32,6 +32,26 @@ module.exports = {
 
                 let loginCorreto = bcrypt.compareSync(senha,loginUsuario.senhaLogin);
 
+                if(loginCorreto){
+
+                    Usuario.findOne({
+                        where:{
+                            idUsuario: loginCorreto.usuario_id_usuario
+                        }
+                    }).then(infoUsuario =>{
+
+                        jwt.sign({
+                            id: infoUsuario.idUsuario,
+                            nome: infoUsuario.nomeUsuario,
+                            sobrenome: infoUsuario.sobrenomeUsuario,
+                            email: loginUsuario.emailLogin
+                        })
+                        res.status(200);
+                    })
+
+
+                }
+
             }else{
                 res.status(401);
                 res.json({err: "O e-mail não está cadastrado!"});
