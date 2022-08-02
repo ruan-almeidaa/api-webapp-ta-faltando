@@ -1,7 +1,10 @@
+require('dotenv/config');
 const UsuarioModel = require("../models/UsuarioModel");
 const LoginUsuarioModel = require("../models/LoginUsuarioModel");
 const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWTSECRET;
+
+
 const bcrypt = require('bcryptjs');
 
 module.exports = {
@@ -40,24 +43,27 @@ module.exports = {
                         }
                     }).then(infoUsuario =>{
 
-                        jwt.sign({
-                            id: infoUsuario.idUsuario,
-                            nome: infoUsuario.nomeUsuario,
-                            sobrenome: infoUsuario.sobrenomeUsuario,
-                            email: loginUsuario.emailLogin
-                        }, jwtSecret,{expiresIn:'168h'}, (err,token) =>{
+                        jwt.sign({id:infoUsuario.idUsuario,nome:infoUsuario.nomeUsuario,sobrenome:infoUsuario.sobrenomeUsuario,email:loginUsuario.emailLogin}, jwtSecret,{expiresIn:'168h'}, (err,token) =>{
                             if(err){
                                 res.status(400);
                                 res.json({err: "Erro na geração do token!"});
+
                             }else{
-                                res.status(200);
-                                localStorage.setItem("token", token);
-                                res.json({token: token});
+
+                                if (typeof window !== 'undefined') {
+                                    // o usuário está utilizando um navegador e por isso pode armazenar o token no localStorage.
+                                    localStorage.setItem("token", JSON.stringify(token));
+                                    res.status(200);
+                                    res.json({token: JSON.stringify(token)});
+                                  } else {
+                                        res.status(400);
+                                        res.json({err: "o usuário não está utilizando um navegador e por isso não pode armazenar o token no localStorage"});
+                                  }
                             }
-                        }).catch((err) =>{
-                            res.status(400);
-                            res.json({err: "Erro na busca pelas informações do usuário!"});
                         })
+                    }).catch((err) =>{
+                        res.status(400);
+                        res.json({err: "Erro na busca pelas informações do usuário!"});
                     })
 
                 }else{
@@ -120,7 +126,7 @@ module.exports = {
                             usuarioIdUsuario: usuarioCadastrado.idUsuario
                         }).then(() => {
                             res.status(200);
-                            res.json({mensagem: usuarioCadastrado.idUsuario});
+                            res.json({mensagem: "O usuário foi cadastrado com sucesso!"});
                         })
                     }).catch((err) =>{
                         res.status(400);

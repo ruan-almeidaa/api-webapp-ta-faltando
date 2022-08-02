@@ -1,15 +1,16 @@
 const express = require("express");
 const routes = express.Router();
+const middleware = require("./middleware/auth");
 
 const Usuario = require("../src/controllers/usuarioController");
 
 // Principal rota da aplicação
-routes.get('/', Usuario.index);
+routes.get('/',middleware,Usuario.index);
 
 // Rotas de usuário
 routes.get('/logar', Usuario.logar);
 routes.post('/logar', Usuario.logando);
-//routes.get('/criar', Usuario.criar);
-routes.post('/criar', Usuario.criar);
+routes.get('/criar', Usuario.criar);
+routes.post('/criando', Usuario.criar);
 
 module.exports = routes;
