@@ -36,7 +36,7 @@ module.exports = {
 
                     UsuarioModel.findOne({
                         where:{
-                            idUsuario: loginUsuario.usuario_id_usuario
+                            idUsuario: loginUsuario.usuarioIdUsuario
                         }
                     }).then(infoUsuario =>{
 
@@ -84,39 +84,59 @@ module.exports = {
     async criar(req,res){
 
         var {nome, sobrenome, email, senha, confSenha} = req.body;
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(senha,salt);
 
-        if(nome.trim() == "" || nome == undefined){
+
+        if(nome == undefined || nome.trim() == ""){
             res.status(400);
             res.json({err: "O nome deve ser preenchido!"});
-        } else if (sobrenome.trim() == "" || sobrenome != undefined){
+        } else if (sobrenome == undefined || sobrenome.trim() == ""){
             res.status(400);
             res.json({err: "O sobrenome deve ser preenchido!"});
-        } else if(email.trim() == "" || email != undefined){
+        } else if(email == undefined || email.trim() == "" ){
             res.status(400);
             res.json({err: "O e-mail deve ser preenchido!"});
-        } else if (senha.trim() == "" || senha == undefined || confSenha.trim() == "" || confSenha == undefined){
+        } else if (senha == undefined || senha.trim() == ""  || confSenha == undefined || confSenha.trim() == ""){
             res.status(400);
             res.json({err: "As senham devem ser preenchidas!"});
         } else if (senha != confSenha){
             res.status(400);
             res.json({err: "As senham devem ser iguais!"});
         }else{
-            UsuarioModel.create({
-                nomeUsuario: nome,
-                sobreNomeUsuario: sobrenome
-            }).then(() =>{
-                LoginUsuarioModel.create({
-                    emailLogin: email.trim(),
-                    senhaLogin: hash
+            LoginUsuarioModel.count({
+                where:{
+                    emailLogin: email
+                }
+            }).then(emailCadastrado =>{
+                if(emailCadastrado == 0){
 
-                })
+                    const hash = bcrypt.hashSync(senha, 10);
+                    UsuarioModel.create({
+                        nomeUsuario: nome,
+                        sobreNomeUsuario: sobrenome
+                    }).then(usuarioCadastrado =>{
+                        LoginUsuarioModel.create({
+                            emailLogin: email.trim(),
+                            senhaLogin: hash,
+                            usuarioIdUsuario: usuarioCadastrado.idUsuario
+                        }).then(() => {
+                            res.status(200);
+                            res.json({mensagem: usuarioCadastrado.idUsuario});
+                        })
+                    }).catch((err) =>{
+                        res.status(400);
+                        res.json({err: "Erro ao cadastrar o usuário!"});
+                    })
+
+                }else{
+                    res.status(400);
+                    res.json({err: "Este e-mail já está cadastrado!"});
+
+                }
+            }).catch((err) =>{
+                res.status(401);
+                res.json({err: "Houve um erro ao verificar se o e-mail já está cadastrado!"});
             })
         }
-
-
-        await Usuario.create()
 
     },
 

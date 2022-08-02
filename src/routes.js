@@ -8,6 +8,8 @@ routes.get('/', Usuario.index);
 
 // Rotas de usuário
 routes.get('/logar', Usuario.logar);
-routes.post('logar', Usuario.logando);
+routes.post('/logar', Usuario.logando);
+//routes.get('/criar', Usuario.criar);
+routes.post('/criar', Usuario.criar);
 
 module.exports = routes;
