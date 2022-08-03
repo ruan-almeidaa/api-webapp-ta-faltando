@@ -1,6 +1,5 @@
 require('dotenv/config');
 const jwt = require("jsonwebtoken");
-const jwtSecret = process.env.JWTSECRET;
 
 function auth(req, res, next){
     const header = req.headers['authorization'];
@@ -9,15 +8,19 @@ function auth(req, res, next){
         const bearer = header.split(" ");
         const token = bearer[1];
 
-        var informacoesUsuario = jwt.verify(token, jwtSecret);
-        console.log(informacoesUsuario);
+        try {
+            var informacoesUsuario = jwt.verify(token, process.env.JWTSECRET);
+            next();
+        } catch (error) {
+            res.status(403);
+            res.json({err: "O usuário não está autorizado!"});
+        }
 
-        next();
     
 
     }else{
         res.status(403);
-        res.json({err: "O usuário não está autorizado!"})
+        res.json({err: "O usuário não está autorizado!"});
     }
 }
 

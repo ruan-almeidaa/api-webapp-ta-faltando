@@ -5,7 +5,7 @@ const middleware = require("./middleware/auth");
 const Usuario = require("../src/controllers/usuarioController");
 
 // Principal rota da aplicação
-routes.get('/',middleware,Usuario.index);
+routes.get('/',Usuario.index);
 
 // Rotas de usuário
 routes.get('/logar', Usuario.logar);

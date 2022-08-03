@@ -2,8 +2,6 @@ require('dotenv/config');
 const UsuarioModel = require("../models/UsuarioModel");
 const LoginUsuarioModel = require("../models/LoginUsuarioModel");
 const jwt = require("jsonwebtoken");
-const jwtSecret = process.env.JWTSECRET;
-
 
 const bcrypt = require('bcryptjs');
 
@@ -11,7 +9,8 @@ module.exports = {
 
     async index(req, res){
 
-        return res.status(200);
+        res.status(200);
+        res.json({msg: "Bem vindo a pagina inicial!"});
 
     },
 
@@ -43,13 +42,16 @@ module.exports = {
                         }
                     }).then(infoUsuario =>{
 
-                        jwt.sign({id:infoUsuario.idUsuario,nome:infoUsuario.nomeUsuario,sobrenome:infoUsuario.sobrenomeUsuario,email:loginUsuario.emailLogin}, jwtSecret,{expiresIn:'168h'}, (err,token) =>{
+                        jwt.sign({id:infoUsuario.idUsuario,nome:infoUsuario.nomeUsuario,sobrenome:infoUsuario.sobrenomeUsuario,email:loginUsuario.emailLogin}, process.env.JWTSECRET,{expiresIn:'168h'}, (err,token) =>{
                             if(err){
                                 res.status(400);
                                 res.json({err: "Erro na geração do token!"});
 
                             }else{
-
+                                console.log("token");
+                                console.log(token);
+                                
+                                
                                 if (typeof window !== 'undefined') {
                                     // o usuário está utilizando um navegador e por isso pode armazenar o token no localStorage.
                                     localStorage.setItem("token", JSON.stringify(token));
