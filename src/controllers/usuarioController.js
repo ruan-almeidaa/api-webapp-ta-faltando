@@ -16,7 +16,8 @@ module.exports = {
 
     async logar(req,res){
 
-        return res.status(200);
+        res.status(200);
+        res.json({msg: "Bem vindo a pagina de login!"});
         
     },
 
@@ -42,26 +43,20 @@ module.exports = {
                         }
                     }).then(infoUsuario =>{
 
-                        jwt.sign({id:infoUsuario.idUsuario,nome:infoUsuario.nomeUsuario,sobrenome:infoUsuario.sobrenomeUsuario,email:loginUsuario.emailLogin}, process.env.JWTSECRET,{expiresIn:'168h'}, (err,token) =>{
+                        jwt.sign({
+                            id:infoUsuario.idUsuario,
+                            nome:infoUsuario.nomeUsuario,
+                            sobrenome:infoUsuario.sobrenomeUsuario,
+                            email:loginUsuario.emailLogin},
+                            process.env.JWTSECRET,{expiresIn:'168h'}, (err,token) =>{
                             if(err){
                                 res.status(400);
                                 res.json({err: "Erro na geração do token!"});
 
-                            }else{
-                                console.log("token");
-                                console.log(token);
-                                
-                                
-                                if (typeof window !== 'undefined') {
-                                    // o usuário está utilizando um navegador e por isso pode armazenar o token no localStorage.
-                                    localStorage.setItem("token", JSON.stringify(token));
+                            } else{
                                     res.status(200);
-                                    res.json({token: JSON.stringify(token)});
-                                  } else {
-                                        res.status(400);
-                                        res.json({err: "o usuário não está utilizando um navegador e por isso não pode armazenar o token no localStorage"});
-                                  }
-                            }
+                                    res.json({token: JSON.stringify(token)}); 
+                                }
                         })
                     }).catch((err) =>{
                         res.status(400);
@@ -90,6 +85,11 @@ module.exports = {
     },
 
     async criar(req,res){
+        res.status(200);
+        res.json({msg: "Bem vindo a página de cadastro!"});
+    },
+
+    async criando(req,res){
 
         var {nome, sobrenome, email, senha, confSenha} = req.body;
 
@@ -152,7 +152,15 @@ module.exports = {
 
     },
 
+    async editando(req,res){
+
+    },
+
     async excluir(req,res){
+
+    },
+
+    async excluindo(req,res){
 
     },
 

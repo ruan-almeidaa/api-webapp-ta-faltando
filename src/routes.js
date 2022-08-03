@@ -11,6 +11,6 @@ routes.get('/',Usuario.index);
 routes.get('/logar', Usuario.logar);
 routes.post('/logar', Usuario.logando);
 routes.get('/criar', Usuario.criar);
-routes.post('/criando', Usuario.criar);
+routes.post('/criar', Usuario.criando);
 
 module.exports = routes;
