@@ -1,22 +1,28 @@
-require('dotenv/config');
-const jwt = require("jsonwebtoken");
+const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
 
-function auth(req, res, next){
+async function auth(req, res, next){
     const header = req.headers['authorization'];
 
     if(header != undefined){
         const bearer = header.split(" ");
         const token = bearer[1];
 
-        try {
-            var informacoesUsuario = jwt.verify(token, process.env.JWTSECRET);
-            next();
-        } catch (error) {
+        const infoUsuario = await validaTokenERetornaUsuario(token);
+
+        if (infoUsuario != null) {
+
+            if (typeof window !== 'undefined') {
+                localStorage.setItem("token", token);
+                next();
+            } else {
+                res.status(403);
+                res.json({err: "O usuário não tem acesso ao LocalStorage!"});
+              }
+              
+        } else {
             res.status(403);
             res.json({err: "O usuário não está autorizado!"});
         }
-
-    
 
     }else{
         res.status(403);

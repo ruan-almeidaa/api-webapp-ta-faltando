@@ -1,5 +1,6 @@
 const Sequelize = require ("sequelize");
 const conexao = require("../../database/database");
+const UsuarioModel = require("../models/UsuarioModel");
 
 const listaDeCompraModel = conexao.define('listas',{
     idLista:{
@@ -10,12 +11,12 @@ const listaDeCompraModel = conexao.define('listas',{
     tituloLista:{
         type: Sequelize.STRING,
         allowNull: false
-    },
-    idProprietarioLista:{
-        type: Sequelize.INTEGER,
     }
 
 });
+
+listaDeCompraModel.belongsTo(UsuarioModel); //uma lista de compras tem um usuário proprietário.
+UsuarioModel.hasMany(listaDeCompraModel); //um usuario tem várias listas de compras.
 
 listaDeCompraModel.sync({force:false});
 module.exports = listaDeCompraModel;
