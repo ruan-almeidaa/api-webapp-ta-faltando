@@ -1,7 +1,7 @@
 require('dotenv/config');
 const jwt = require("jsonwebtoken");
 const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
-const bcrypt = require('bcryptjs');
+const pegaToken = require("../functions/pegaToken");
 
 //models
 const UsuarioModel = require("../models/UsuarioModel");
@@ -14,10 +14,10 @@ module.exports = {
 
     async retornaListasDoUsuario(req, res){
 
-        if (typeof window !== 'undefined') {
-
             try{
-                const token = localStorage.getItem("token");
+
+                token = await pegaToken(req,res);
+
                 const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
 
                 ListaDeCompraModel.findAll({
@@ -44,10 +44,6 @@ module.exports = {
                 res.json({err: "Aconteceu um erro ao validar o token do usuário e suas listas de compras!"});
 
             }
-        } else {
-            res.status(403);
-            res.json({err: "O usuário não tem acesso ao LocalStorage!"});
-          }
                 
     },
 
@@ -60,14 +56,9 @@ module.exports = {
         const tituloLista = req.body.tituloLista;
 
         try {
-            var token = " ";
-            if(typeof window != 'undefined') {
-                token = localStorage.getItem("token");
-            }else{
-                const header = req.headers['authorization'];
-                const bearer = header.split(" ");
-                token = bearer[1];
-            }
+
+            token = await pegaToken(req,res);
+
             const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
             const usuario = parseInt(id);
 
@@ -98,14 +89,8 @@ module.exports = {
         const {idListaDeCompra} = req.body;
         const idListaInt = parseInt(idListaDeCompra);
         
-        var token = " ";
-        if(typeof window != 'undefined') {
-            token = localStorage.getItem("token");
-        }else{
-            const header = req.headers['authorization'];
-            const bearer = header.split(" ");
-            token = bearer[1];
-        }
+        token = await pegaToken(req,res);
+
         const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
 
         ListaDeCompraModel.destroy({

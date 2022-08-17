@@ -1,9 +1,10 @@
 require('dotenv/config');
+const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
+
+//Models
 const UsuarioModel = require("../models/UsuarioModel");
 const LoginUsuarioModel = require("../models/LoginUsuarioModel");
-const jwt = require("jsonwebtoken");
-
-const bcrypt = require('bcryptjs');
 
 module.exports = {
 
