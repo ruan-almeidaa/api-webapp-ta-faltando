@@ -11,6 +11,10 @@ const ItemParaListaModel = require("../models/ItemParaListaModel");
 module.exports = {
 
     async retornaItensDaLista(req, res){
-
+        try {
+            const {idDaLista} = req.body;
+        } catch (error) {
+            
+        }
     }
 }

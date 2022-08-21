@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 module.exports = async function(req, res){
         var token = " ";
         if(typeof window != 'undefined') {
-            console.log("entrou no if");
             token = localStorage.getItem("token");
         }else{
             const header = req.headers['authorization'];

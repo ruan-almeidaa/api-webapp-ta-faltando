@@ -23,6 +23,6 @@ routes.post('/listas', ListaDeCompra.criando);
 routes.delete('/listas', ListaDeCompra.deletando);
 
 //Rotas para os itens das listas
-routes.get("/listas/:id", ItensParaLista.retornaItensDaLista);
+routes.get("/listas/itens/:id", ItensParaLista.retornaItensDaLista);
 
 module.exports = routes;
