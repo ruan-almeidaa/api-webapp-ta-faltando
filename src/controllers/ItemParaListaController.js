@@ -9,7 +9,8 @@ const ItemParaListaModel = require("../models/ItemParaListaModel");
 //Funções
 const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
 const pegaToken = require("../functions/pegaToken");
-const listaPertenceAoUsuario = require("../functions/validaSeListaPertenceAoUsuario");
+const validaUsuarioTemAcessoLista = require("../functions/validaUsuarioTemAcessoLista");
+const buscaItensDalista = require("../functions/buscaItensDaLista");
 
 module.exports = {
 
@@ -19,21 +20,25 @@ module.exports = {
             const token = await pegaToken();
             const usuario = await validaTokenERetornaUsuario(token);
 
-                const temAcessoLista = await listaPertenceAoUsuario(idDaLista, usuario.id);
-                ItemParaListaModel.findAll({
-                    where:{
-                        listaIdLista: listaEncontrada.idLista
-                    }
-                }).then((itensDaLista) => {
+            const usuarioTemAcesso = await validaUsuarioTemAcessoLista(idDaLista, usuario.id);
+
+            if(usuarioTemAcesso){
+                var itensDalista = await buscaItensDalista(idDaLista);
+
+                if(itensDalista != null){
                     res.status(200);
-                    res.json({token: JSON.stringify(token)}); 
-                }).catch((err) =>{
+                    res.send(itensDalista);
+                }else{
                     res.status(400);
-                    res.json({err: "Não foi possível encontrar os itens lista de compras!"});
-                })
+                    res.json({err: "Não foi possível buscar os itens da lista!"});
+                }
+            }
+
+
 
         } catch (error) {
-            
+            res.status(400);
+            res.json({err: "Não foi possível buscar os itens da lista!"});
         }
     }
 }
