@@ -31,9 +31,8 @@ module.exports = {
                         }
                     }).then(listasCompartilhadasComUsuario =>{
 
-                        const todasListasDoUsuario = Object.assign({}, listasDoUsuario,listasCompartilhadasComUsuario);
                         res.status(200);
-                        res.json({listas: todasListasDoUsuario}); 
+                        res.send(Object.assign({}, listasDoUsuario,listasCompartilhadasComUsuario));
 
                     })
 

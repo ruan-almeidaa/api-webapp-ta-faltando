@@ -32,13 +32,50 @@ module.exports = {
                     res.status(400);
                     res.json({err: "Não foi possível buscar os itens da lista!"});
                 }
+            }else{
+                res.status(400);
+                res.json({err: "O usuário não tem acesso a lista!"});
             }
-
-
-
         } catch (error) {
             res.status(400);
             res.json({err: "Não foi possível buscar os itens da lista!"});
+        }
+    },
+
+    async criaItemNaLista(req,res){
+        try
+        {
+            const {nomeItem, idLista} = req.body;
+            if(nomeItem == undefined || nomeItem.trim() == ""){
+                res.status(400);
+                res.json({err: "Deve ser informado um nome válido para o item!"});
+            }else if((idLista == undefined || idLista.trim() == "")){
+                res.status(400);
+                res.json({err: "Deve ser informada uma lista válida para adicionar o item!"});
+            }else{
+                const token = await pegaToken();
+                const usuario = await validaTokenERetornaUsuario(token);
+                const usuarioTemAcesso = await validaUsuarioTemAcessoLista(idDaLista, usuario.id);
+                const idListaInt = parseInt(idLista);
+
+                if(usuarioTemAcesso){
+                    ItemParaListaModel.create({
+                        nomeItem: nomeItem,
+                        listaIdLista: idLista
+                    }).then((itemInserido) =>{
+                        res.status(200);
+                        res.json({mensagem: "O item foi adicionado com sucesso!"});
+                    }).catch((err) =>{
+                        res.status(401);
+                        res.json({err: "O registro não pode ser inserido!"});
+                    })
+                }
+            }
+
+
+        } catch (error) {
+            res.status(401);
+            res.json({err: "O registro não pode ser inserido!"});
         }
     }
 }

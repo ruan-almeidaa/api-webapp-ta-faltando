@@ -18,11 +18,12 @@ routes.post('/criar', Usuario.criando);
 
 //Rotas para listas de compras
 routes.get('/home', ListaDeCompra.retornaListasDoUsuario);
-routes.get('/listas', ListaDeCompra.criar);
-routes.post('/listas', ListaDeCompra.criando);
-routes.delete('/listas', ListaDeCompra.deletando);
+routes.get('/lista', ListaDeCompra.criar);
+routes.post('/lista', ListaDeCompra.criando);
+routes.delete('/lista', ListaDeCompra.deletando);
+routes.get("/lista/:id", ItensParaLista.retornaItensDaLista);
 
 //Rotas para os itens das listas
-routes.get("/listas/itens/:id", ItensParaLista.retornaItensDaLista);
+routes.post("/lista/itens", ItensParaLista.criaItemNaLista);
 
 module.exports = routes;
