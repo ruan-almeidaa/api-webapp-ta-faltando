@@ -9,8 +9,7 @@ const ItemParaListaModel = require("../models/ItemParaListaModel");
 //Funções
 const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
 const pegaToken = require("../functions/pegaToken");
-const validaUsuarioTemAcessoLista = require("../functions/validaUsuarioTemAcessoLista");
-const buscaItensDalista = require("../functions/buscaItensDaLista");
+const funcoesItens = require("../functions/funcoesItens");
 
 module.exports = {
 
@@ -23,7 +22,7 @@ module.exports = {
             const usuarioTemAcesso = await validaUsuarioTemAcessoLista(idDaLista, usuario.id);
 
             if(usuarioTemAcesso){
-                var itensDalista = await buscaItensDalista(idDaLista);
+                let itensDalista = await funcoesItens.buscaItensDaLista(idDaLista);
 
                 if(itensDalista != null){
                     res.status(200);
@@ -46,6 +45,7 @@ module.exports = {
         try
         {
             const {nomeItem, idLista} = req.body;
+
             if(nomeItem == undefined || nomeItem.trim() == ""){
                 res.status(400);
                 res.json({err: "Deve ser informado um nome válido para o item!"});
@@ -53,28 +53,33 @@ module.exports = {
                 res.status(400);
                 res.json({err: "Deve ser informada uma lista válida para adicionar o item!"});
             }else{
-                const token = await pegaToken();
+                const token = await pegaToken(req,res);
                 const usuario = await validaTokenERetornaUsuario(token);
-                const usuarioTemAcesso = await validaUsuarioTemAcessoLista(idDaLista, usuario.id);
-                const idListaInt = parseInt(idLista);
+                const usuarioTemAcesso = await funcoesItens.validaUsuarioTemAcessoLista(idLista, usuario.id);
 
                 if(usuarioTemAcesso){
                     ItemParaListaModel.create({
                         nomeItem: nomeItem,
-                        listaIdLista: idLista
-                    }).then((itemInserido) =>{
-                        res.status(200);
-                        res.json({mensagem: "O item foi adicionado com sucesso!"});
-                    }).catch((err) =>{
-                        res.status(401);
-                        res.json({err: "O registro não pode ser inserido!"});
-                    })
+                        listaIdLista: parseInt(idLista)
+                    }).then((itemInserido) =>
+                        {
+                            res.status(200);
+                            res.json({mensagem: "O item foi adicionado com sucesso!"});
+                        }).catch((err) =>
+                        {
+                            res.status(401);
+                            res.json({err: "O registro não pode ser inserido!"});
+                        })
+                }else{
+                    res.status(401);
+                    res.json({err: "O usuário não tem acesso a lista!"});
                 }
             }
 
 
-        } catch (error) {
-            res.status(401);
+        } catch(error) {
+            res.status(400);
+            console.log(error);
             res.json({err: "O registro não pode ser inserido!"});
         }
     }
