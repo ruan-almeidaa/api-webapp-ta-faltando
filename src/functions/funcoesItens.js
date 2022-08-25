@@ -2,9 +2,12 @@ const ListaDeCompraModel = require("../models/ListaDeCompraModel");
 const CompartilhamentoDeListasModel = require("../models/CompartilhamentoDeListasModel");
 
 module.exports = {
+    
     async validaUsuarioTemAcessoLista(idLista, idUsuario){
+        
         try {
             const idListaInt = parseInt(idLista), idUsuarioInt = parseInt(idUsuario);
+            let temAcesso = false;
 
             ListaDeCompraModel.count({
                 where:{
@@ -19,12 +22,18 @@ module.exports = {
                     }
                 }).then(numeroDeCompartilhamentos =>{
 
+                    if(numeroDeListas > 0 || numeroDeCompartilhamentos > 0){
+                        temAcesso = true;
+                    }
                 })
             })
-            
+        
+        return temAcesso = true ? true : false;
+        
         } catch (error) {
-            
+            return false;
         }
+        
     },
 
     async buscaItensDaLista(idLista){

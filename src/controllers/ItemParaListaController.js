@@ -56,7 +56,7 @@ module.exports = {
                 const token = await pegaToken(req,res);
                 const usuario = await validaTokenERetornaUsuario(token);
                 const usuarioTemAcesso = await funcoesItens.validaUsuarioTemAcessoLista(idLista, usuario.id);
-
+                
                 if(usuarioTemAcesso){
                     ItemParaListaModel.create({
                         nomeItem: nomeItem,

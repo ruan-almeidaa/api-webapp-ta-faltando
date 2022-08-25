@@ -13,6 +13,7 @@ async function auth(req, res, next){
 
             if (typeof window !== 'undefined') {
                 localStorage.setItem("token", token);
+                console.log(token);
                 next();
             } else {
                 res.status(403);

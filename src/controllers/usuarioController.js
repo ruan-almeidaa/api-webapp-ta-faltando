@@ -85,12 +85,12 @@ module.exports = {
 
     },
 
-    async criar(req,res){
+    async cadastrar(req,res){
         res.status(200);
         res.json({msg: "Bem vindo a página de cadastro!"});
     },
 
-    async criando(req,res){
+    async cadastrando(req,res){
 
         var {nome, sobrenome, email, senha, confSenha} = req.body;
 
