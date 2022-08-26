@@ -115,7 +115,10 @@ module.exports = {
             res.json({err: "Não foi possível excluir a lista!"});
         }
 
-        
-
     },
+
+    async compartilhandoLista (req,res) =>{
+        
+    }
+
 }
