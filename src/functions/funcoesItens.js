@@ -10,7 +10,7 @@ module.exports = {
             const idListaInt = parseInt(idLista);
             let itensDalista = null;
 
-            ItemParaListaModel.findAll({
+           await ItemParaListaModel.findAll({
                 where:{
                     listaIdLista: idListaInt
                 },
@@ -19,11 +19,10 @@ module.exports = {
                 {
                     itensDalista = resultItensDaLista;
                 })
-                
+
             return itensDalista != null ? itensDalista : null;
 
         } catch (error) {
-            console.log("entrou no catch");
             return null;
         }
     }

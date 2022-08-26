@@ -65,7 +65,7 @@ module.exports = {
                 res.status(400);
                 res.json({err: "O nome título da lista deve ser preenchido!"});
             }else{
-                ListaDeCompraModel.create({
+                await ListaDeCompraModel.create({
                     tituloLista: tituloLista,
                     usuarioIdUsuario: usuario
                 }).then(() =>{
@@ -85,31 +85,37 @@ module.exports = {
     },
 
     async deletando(req, res){
-        const {idListaDeCompra} = req.body;
-        const idListaInt = parseInt(idListaDeCompra);
-        
-        token = await pegaToken(req,res);
 
-        const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
+        try {
+            const {idListaDeCompra} = req.body;
+            const idListaInt = parseInt(idListaDeCompra);
+            
+            token = await pegaToken(req,res);
 
-        ListaDeCompraModel.destroy({
-            where:{
-                idLista: idListaInt,
-                usuarioIdUsuario: id
-            }
-        }).then((result) =>{
-            if(result > 0){
-                res.status(200);
-                res.json({mensagem: "A lista foi excluída com sucesso!"});
-            }else{
-                res.status(400);
-                res.json({err: "Não foi possível excluir a lista!"});
-            }
+            const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
 
-        }).catch((erro) =>{
+            await ListaDeCompraModel.destroy({
+                where:{
+                    idLista: idListaInt,
+                    usuarioIdUsuario: id
+                }
+            }).then((result) =>{
+                if(result > 0){
+                    res.status(200);
+                    res.json({mensagem: "A lista foi excluída com sucesso!"});
+                }else{
+                    res.status(400);
+                    res.json({err: "Não foi possível excluir a lista!"});
+                }
+
+            })
+            
+        } catch (error) {
             res.status(400);
-            res.json({err: "Houve um erro ao tentar excluir a lista!"});
-        })
+            res.json({err: "Não foi possível excluir a lista!"});
+        }
+
+        
 
     },
 }
