@@ -10,16 +10,20 @@ const ItemParaListaModel = require("../models/ItemParaListaModel");
 const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
 const pegaToken = require("../functions/pegaToken");
 const funcoesItens = require("../functions/funcoesItens");
+const funcoesListas = require("../functions/funcoesListas");
 
 module.exports = {
 
     async retornaItensDaLista(req, res){
         try {
-            const {idDaLista} = req.body;
-            const token = await pegaToken();
+            const idDaLista = parseInt(req.params.id);
+            const token = await pegaToken(req,res);
             const usuario = await validaTokenERetornaUsuario(token);
 
-            const usuarioTemAcesso = await validaUsuarioTemAcessoLista(idDaLista, usuario.id);
+            const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idDaLista, usuario.id);
+
+            console.log("usuarioTemAcesso");
+            console.log(usuarioTemAcesso);
 
             if(usuarioTemAcesso){
                 let itensDalista = await funcoesItens.buscaItensDaLista(idDaLista);
@@ -55,7 +59,7 @@ module.exports = {
             }else{
                 const token = await pegaToken(req,res);
                 const usuario = await validaTokenERetornaUsuario(token);
-                const usuarioTemAcesso = await funcoesItens.validaUsuarioTemAcessoLista(idLista, usuario.id);
+                const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idLista, usuario.id);
                 
                 if(usuarioTemAcesso){
                     ItemParaListaModel.create({

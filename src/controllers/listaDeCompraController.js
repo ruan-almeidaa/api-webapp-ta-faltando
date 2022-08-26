@@ -20,24 +20,24 @@ module.exports = {
 
                 const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
 
-                ListaDeCompraModel.findAll({
-                    where: {
-                        usuario_id_usuario: parseInt(id)
-                    }
-                }).then(listasDoUsuario =>{
+                const [ promiseListasDoUsuario, promiseListasCompartilhadas ] = await Promise.all([
+                    ListaDeCompraModel.findAll({
+                        where: {
+                            usuario_id_usuario: parseInt(id)
+                        }
+                    }),
+
                     CompartilhamentoDeListasModel.findAll({
                         where: {
                             usuario_id_usuario: parseInt(id)
                         }
-                    }).then(listasCompartilhadasComUsuario =>{
-
-                        res.status(200);
-                        res.send(Object.assign({}, listasDoUsuario,listasCompartilhadasComUsuario));
-
                     })
 
-                })
+                ])
 
+                res.status(200);
+                res.send(Object.assign({}, promiseListasDoUsuario,promiseListasCompartilhadas));
+   
             }catch (error) {
                 res.status(403);
                 res.json({err: "Aconteceu um erro ao validar o token do usuário e suas listas de compras!"});

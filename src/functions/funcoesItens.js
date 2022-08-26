@@ -1,59 +1,29 @@
 const ListaDeCompraModel = require("../models/ListaDeCompraModel");
 const CompartilhamentoDeListasModel = require("../models/CompartilhamentoDeListasModel");
+const ItemParaListaModel = require("../models/ItemParaListaModel");
 
 module.exports = {
-    
-    async validaUsuarioTemAcessoLista(idLista, idUsuario){
-        
-        try {
-            const idListaInt = parseInt(idLista), idUsuarioInt = parseInt(idUsuario);
-            let temAcesso = false;
-
-            ListaDeCompraModel.count({
-                where:{
-                    idLista: idListaInt,
-                    usuarioIdUsuario: idUsuarioInt
-                }
-            }).then(numeroDeListas =>{
-                CompartilhamentoDeListasModel.count({
-                    where:{
-                        listaIdLista: idListaInt,
-                        usuarioIdUsuario: idListaInt
-                    }
-                }).then(numeroDeCompartilhamentos =>{
-
-                    if(numeroDeListas > 0 || numeroDeCompartilhamentos > 0){
-                        temAcesso = true;
-                    }
-                })
-            })
-        
-        return temAcesso = true ? true : false;
-        
-        } catch (error) {
-            return false;
-        }
-        
-    },
 
     async buscaItensDaLista(idLista){
+
         try {
-            const idListaInt = parseInt(this.idLista);
-    
+            const idListaInt = parseInt(idLista);
+            let itensDalista = null;
+
             ItemParaListaModel.findAll({
                 where:{
                     listaIdLista: idListaInt
-                }
-            }).then((itensDaLista) => 
+                },
+                attributes:['idItem', 'nomeItem', 'lista_id_lista']
+            }).then(resultItensDaLista => 
                 {
-                    return itensDaLista;
-            
-                }).catch((err) =>
-                {
-                    return null;
+                    itensDalista = resultItensDaLista;
                 })
-            
+                
+            return itensDalista != null ? itensDalista : null;
+
         } catch (error) {
+            console.log("entrou no catch");
             return null;
         }
     }
