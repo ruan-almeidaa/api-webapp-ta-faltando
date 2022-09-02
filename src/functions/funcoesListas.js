@@ -3,7 +3,7 @@ const CompartilhamentoDeListasModel = require("../models/CompartilhamentoDeLista
 
 module.exports = {
     
-    async validaUsuarioTemAcessoLista(idLista, idUsuario){
+    async validaUsuarioTemAcessoLista(idLista, idUsuario, emailUsuario){
         
         try {
             const idListaInt = parseInt(idLista), idUsuarioInt = parseInt(idUsuario);
@@ -21,7 +21,7 @@ module.exports = {
                 CompartilhamentoDeListasModel.count({
                     where:{
                         listaIdLista: idListaInt,
-                        usuarioIdUsuario: idUsuarioInt
+                        emailLogin: emailUsuario
                     }
                 })
             ])
@@ -33,4 +33,29 @@ module.exports = {
         }
         
     },
+
+    async validaProprietarioDaLista(idLista, idUsuario){
+        try {
+            const idListaInt = parseInt(idLista), idUsuarioInt = parseInt(idUsuario);
+            let proprietarioLista = false;
+
+            await ListaDeCompraModel.count({
+                where:{
+                    idLista: idListaInt,
+                    usuarioIdUsuario: idUsuarioInt
+                }
+            }).then(result =>{
+
+               if(result > 0){
+                proprietarioLista = true;
+               }
+
+            })
+
+            return proprietarioLista;
+
+        } catch (error) {
+            return false;
+        }
+    }
 }

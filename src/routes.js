@@ -28,6 +28,9 @@ try {
     
     //Rotas para os itens das listas
     routes.post("/lista/itens", ItensParaLista.criaItemNaLista);
+
+    //Rotas para compartilhamento de listas
+    routes.post('/lista/compartilhar/:id', ListaDeCompra.compartilhandoLista);
     
 } catch (error) {
     

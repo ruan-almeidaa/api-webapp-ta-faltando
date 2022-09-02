@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const validaTokenERetornaUsuario = require("../functions/validaTokenRetornaInfo");
 const pegaToken = require("../functions/pegaToken");
 
+//functions
+const funcoesListas = require("../functions/funcoesListas");
+
 //models
 const UsuarioModel = require("../models/UsuarioModel");
 const LoginUsuarioModel = require("../models/LoginUsuarioModel");
@@ -29,7 +32,7 @@ module.exports = {
 
                     CompartilhamentoDeListasModel.findAll({
                         where: {
-                            usuario_id_usuario: parseInt(id)
+                            emailLogin: email
                         }
                     })
 
@@ -56,7 +59,7 @@ module.exports = {
 
         try {
 
-            token = await pegaToken(req,res);
+            const token = await pegaToken(req,res);
 
             const {id,nome,sobrenome,email} = await validaTokenERetornaUsuario(token);
             const usuario = parseInt(id);
@@ -117,8 +120,37 @@ module.exports = {
 
     },
 
-    async compartilhandoLista (req,res) =>{
-        
+    async compartilhandoLista(req,res){
+        try {
+            const {emailUsuarioCompartilhamento} = req.body;
+            const idLista = parseInt(req.params.id);
+
+            if(emailUsuarioCompartilhamento == undefined || emailUsuarioCompartilhamento.trim() == "" ){
+                res.status(400);
+                res.json({err: "O e-mail deve ser preenchido!"});
+            }else{
+                const token = await pegaToken(req,res);
+                const {id} = await validaTokenERetornaUsuario(token);
+                const listaPertenceAoUsuario = await funcoesListas.validaProprietarioDaLista(idLista, id);
+                if(listaPertenceAoUsuario){
+                    
+                    await CompartilhamentoDeListasModel.create({
+                        listaIdLista: idLista,
+                        emailLogin: emailUsuarioCompartilhamento
+                    }).then((result) =>{
+                        res.status(200);
+                        res.json({mensagem: "A lista foi compartilhada com sucesso!"});
+                    })
+                }
+
+
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 }

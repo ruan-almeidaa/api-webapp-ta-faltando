@@ -13,7 +13,6 @@ module.exports = async function(req, res){
             const header = req.headers['authorization'];
             const bearer = header.split(" ");
             token = bearer[1];
-            console.log(token);
         }
 
         return token;

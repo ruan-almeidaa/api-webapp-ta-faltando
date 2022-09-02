@@ -20,10 +20,7 @@ module.exports = {
             const token = await pegaToken(req,res);
             const usuario = await validaTokenERetornaUsuario(token);
 
-            const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idDaLista, usuario.id);
-
-            console.log("usuarioTemAcesso");
-            console.log(usuarioTemAcesso);
+            const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idDaLista, usuario.id, usuario.email);
 
             if(usuarioTemAcesso){
                 let itensDalista = await funcoesItens.buscaItensDaLista(idDaLista);
@@ -59,7 +56,7 @@ module.exports = {
             }else{
                 const token = await pegaToken(req,res);
                 const usuario = await validaTokenERetornaUsuario(token);
-                const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idLista, usuario.id);
+                const usuarioTemAcesso = await funcoesListas.validaUsuarioTemAcessoLista(idLista, usuario.id, usuario.email);
                 
                 if(usuarioTemAcesso){
                     ItemParaListaModel.create({
