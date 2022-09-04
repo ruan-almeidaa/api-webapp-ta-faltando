@@ -21,4 +21,6 @@ const UsuarioModel = conexao.define('usuarios',{
 });
 
 UsuarioModel.sync({force:false});
+
+
 module.exports = UsuarioModel;

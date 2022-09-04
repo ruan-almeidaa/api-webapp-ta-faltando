@@ -1,3 +1,4 @@
+require('dotenv/config');
 const Sequelize = require("sequelize");
 let conexao = 'string de conexão';
 

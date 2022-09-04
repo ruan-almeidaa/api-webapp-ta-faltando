@@ -20,6 +20,6 @@ const CompartilhamentoDeListasModel = conexao.define('compartilhamento',{
 CompartilhamentoDeListasModel.belongsTo(listaDeCompraModel); //um compartilhamento tem uma lista de compras.
 listaDeCompraModel.hasMany(CompartilhamentoDeListasModel); //uma lista de compras tem vários compartilhamentos.
 
-
 CompartilhamentoDeListasModel.sync({force:false});
+
 module.exports = CompartilhamentoDeListasModel;

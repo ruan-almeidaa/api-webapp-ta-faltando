@@ -19,4 +19,7 @@ listaDeCompraModel.belongsTo(UsuarioModel); //uma lista de compras tem um usuár
 UsuarioModel.hasMany(listaDeCompraModel); //um usuario tem várias listas de compras.
 
 listaDeCompraModel.sync({force:false});
+
+
+
 module.exports = listaDeCompraModel;

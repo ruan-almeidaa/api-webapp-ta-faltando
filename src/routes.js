@@ -1,3 +1,4 @@
+const Sequelize = require ("sequelize");
 const express = require("express");
 const routes = express.Router();
 const middleware = require("./middleware/auth");

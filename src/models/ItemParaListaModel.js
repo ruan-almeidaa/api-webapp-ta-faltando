@@ -21,4 +21,5 @@ ItemParaListaModel.belongsTo(listaDeCompraModel); //um item tem uma lista de com
 listaDeCompraModel.hasMany(ItemParaListaModel); //uma lista de compras tem vários itens.
 
 ItemParaListaModel.sync({force:false});
+
 module.exports = ItemParaListaModel;
